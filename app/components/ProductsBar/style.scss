@@ -1,0 +1,25 @@
+/*
+ * @file style for component ProductsBar
+ */
+
+.product-perform-component {
+    position: absolute;
+    top: 150px;
+    width: 975px;
+    height: 460px;
+    border: #aaa solid 2px;
+    background-color: #fbefb299;
+
+    .not-union{
+        font-size: 30px;
+        height: 454px;
+        line-height: 454px;
+        color: #211e1e;
+        text-align: center;
+    }
+
+    .product-title{
+        font-size: 15px;
+        font-family: SimSun;
+    }
+}

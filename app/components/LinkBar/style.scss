@@ -1,0 +1,38 @@
+/*
+ * @file style for component LinkBar
+ */
+
+.primitive-link-component {
+    position: absolute;
+    width: 975px;
+    height: 145px;
+    border: #aaa solid 2px;
+    background: rgba(255,255,255,0.5);
+
+    .link-title{
+        font-size: 15px;
+        font-family: SimSun;
+    }
+
+    .control-area {
+        position: absolute;
+        margin: 20px;
+        height: 115px;
+        width: 935px;
+
+        button {
+            position: relative;
+            float: left;
+            top: 20px;
+            width: 136px;
+            height:30px;
+            margin-left: 190px;
+            box-shadow: 0 0 10px #0400ff;
+        }
+    }
+
+    footer {
+        position: absolute;
+        bottom: 0px;
+    }
+}

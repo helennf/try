@@ -1,0 +1,31 @@
+/*
+ * @file style for component PrepareBar
+ */
+.prepare-component {
+    position: absolute;
+    top: 20px;
+    left: 0px;
+    border: #aaa dashed 2px;
+    border-left: 0px;
+    background: rgba(255, 255, 255, 0.5);
+
+    .prepare-area{
+        width: 330px;
+        height: 610px;
+
+        button {
+            position: relative;
+            float: left;
+            top: 46px;
+            width: 136px;
+            height: 30px;
+            margin-left: 97px;
+            margin-top: 30px;
+        }
+
+        .prepare-title{
+            font-size: 15px;
+            font-family: SimSun;
+        }
+    }
+}
