@@ -22,4 +22,31 @@
         font-size: 15px;
         font-family: SimSun;
     }
+
+    .product-area{
+        .export-word{
+            position: absolute;
+            top: 0px;
+            right: 115px;
+            font-size: 15px;
+            font-family: SimSun;
+            padding: 0px 15px 0px 15px;
+            background: #3385ff;
+            color: #fff;
+            border: solid 1px darkgray;
+            cursor: pointer;
+        }
+        .export-excel{
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            font-size: 15px;
+            font-family: SimSun;
+            padding: 0px 15px 0px 15px;
+            background: #3385ff;
+            color: #fff;
+            border: solid 1px darkgray;
+            cursor: pointer;
+        }
+    }
 }

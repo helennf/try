@@ -81,7 +81,7 @@ class Mapproduct extends React.Component {
             )
         );
         return (
-            <div className="col-md-2-1 map-product">
+            <div className="col-md-2-1 map-product" id="map">
                 <Map
                     style="mapbox://styles/mapbox/streets-v9"
                     containerStyle={{

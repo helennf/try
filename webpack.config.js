@@ -4,11 +4,13 @@ const CleanWebpackPlugin = require("clean-webpack-plugin");
 const path = require('path');
 
 module.exports={
-    entry:path.resolve(__dirname,'app/app.jsx'),//入口文件
+    entry:{
+        app:path.resolve(__dirname,'app/app.jsx'),//入口文件
+    },
     //target: 'node',
     output:{
         path:path.resolve(__dirname,'public'),//打包后的文件位置
-        filename:'bundle.js'//打包后的文件
+        filename:'[name].js'//打包后的文件
     },
     module: {
         rules:[
@@ -63,7 +65,11 @@ module.exports={
                     }
                 }]
             }
-            ]
+        ],
+        loaders: [
+            { test: /jquery-mousewheel/, loader: "imports?define=>false&this=>window" },
+            { test: /malihu-custom-scrollbar-plugin/, loader: "imports?define=>false&this=>window" }
+        ]
     },
     devServer: {
         contentBase: './public',//默认本地服务器在跟目录
@@ -74,13 +80,27 @@ module.exports={
         overlay: true //如果为false，则不在浏览器页面显示错误信息
     },
     resolve: {
-        extensions: ['*','.js','.jsx']
+        extensions: ['*','.js','.jsx'],
+/*        alias:{
+            xdoc:path.resolve(__dirname,"app/utils/xdoc.js"),
+            baiduTemplate: path.resolve(__dirname, 'app/utils/baiduTemplate.js')
+        }*/
     },
     plugins:[
         new HtmlWebpackPlugin({
-            title: 'My try app'
+            title: 'My try app',
+            chunks: ['app'],
+            chunksSortMode: 'manual'
         }),
         new CleanWebpackPlugin(['public']),
-        new webpack.BannerPlugin('版权所有，翻版必究')
-    ]
+        new webpack.BannerPlugin('版权所有，翻版必究'),
+        new webpack.ProvidePlugin({
+            $:"jquery",
+            jQuery:"jquery",
+            "window.jQuery":"jquery",
+/*            xdoc:'xdoc',
+            baiduTemplate: 'baiduTemplate'*/
+        })
+    ],
+
 }

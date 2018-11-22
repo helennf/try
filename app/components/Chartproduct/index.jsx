@@ -8,7 +8,14 @@ import PropTypes from 'prop-types';
 import echarts from 'echarts/lib/echarts';
 import  'echarts/lib/chart/pie';
 import 'echarts/lib/component/tooltip';
+import 'echarts/lib/component/toolbox';
 import 'echarts/lib/component/title';
+
+
+/*require("jquery-mousewheel")($);
+require('malihu-custom-scrollbar-plugin')($);*/
+/*import './../../../external/mCustomScrollbar/jquery.mCustomScrollbar.js';
+import './../../../external/mCustomScrollbar/jquery.mCustomScrollbar.css';*/
 import './style.scss';
 
 @observer
@@ -37,6 +44,40 @@ class Chartproduct extends React.Component{
                 }
             },
             backgroundColor: '#fefdddD8',
+            toolbox: { //可视化的工具箱
+                show: true,
+                feature: {
+                    dataView: { //数据视图
+                        show: true
+                    },
+/*                    restore: { //重置
+                        show: true,
+                        title : '还原',
+                        color : 'black'
+                    },
+                    dataZoom: { //数据缩放视图
+                        show : true,
+                        title : {
+                            dataZoom : '区域缩放',
+                            dataZoomReset : '区域缩放-后退'
+                        }
+                    },*/
+                    saveAsImage: {//保存图片
+                        show : true,
+                        title : '保存为图片',
+                        type : 'jpeg',
+                        lang : ['点击本地保存']
+                    },
+/*                    magicType: {//动态类型切换
+                        show : true,
+                        title : {
+                            line : '动态类型切换-折线图',
+                            bar : '动态类型切换-柱形图',
+                        },
+                        type: ['line', 'bar']
+                    }*/
+                }
+            },
             tooltip : {
                 trigger: 'item',
                 formatter: "{a} <br/>{b} : {c} ({d}%)"
@@ -55,7 +96,7 @@ class Chartproduct extends React.Component{
             series: [{
                 name: '全国各地区GDP占比',
                 type: 'pie',
-                radius: '50%',
+                radius: '30%',
                 //roseType: 'angle',
                 data: chartData,
                 label: {
@@ -82,6 +123,7 @@ class Chartproduct extends React.Component{
                 }
             }]
         });
+
     };
 
     render(){
