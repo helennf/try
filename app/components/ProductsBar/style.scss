@@ -24,6 +24,21 @@
     }
 
     .product-area{
+        width: 100%;
+        height: 100%;
+
+        .export-pdf{
+            position: absolute;
+            top: 0px;
+            right: 223px;
+            font-size: 15px;
+            font-family: SimSun;
+            padding: 0px 15px 0px 15px;
+            background: #3385ff;
+            color: #fff;
+            border: solid 1px darkgray;
+            cursor: pointer;
+        }
         .export-word{
             position: absolute;
             top: 0px;

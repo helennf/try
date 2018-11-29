@@ -11,8 +11,14 @@ import Chartproduct from '../Chartproduct';
 // import XDoc from './../../utils/xdoc.js';
 import fs from 'file-saver';
 import '../../utils/jquery.wordexport.js'
+import '../../utils/jquery.base64.js'
 import XLSX from 'xlsx';
 import html2canvas from 'html2canvas';
+import Canvas2Image from '../../../external/canvas2image/canvas2image.js'
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
+import pdfMake from 'pdfmake/build/pdfmake.js';
+import pdfFonts from 'pdfmake/build/vfs_fonts.js';
 import './style.scss';
 
 // var baidu = require("./../../utils/baiduTemplate.js");
@@ -26,91 +32,79 @@ class Products extends React.Component {
     constructor(props) {
         super(props);
 
+        this.exportAsPdf = this.exportAsPdf.bind(this);
         this.exportAsWord = this.exportAsWord.bind(this);
         this.exportAsExcel = this.exportAsExcel.bind(this);
         this.saveAs = this.saveAs.bind(this);
         this.s2ab = this.s2ab.bind(this);
-        this.html2canvasImg = this.html2canvasImg.bind(this);
+    }
+
+    exportAsPdf = () => {
+        pdfMake.vfs = pdfFonts.pdfMake.vfs;
+        var docDefinition = {
+            pageSize:'A4',
+            content: [
+                {
+                    text: '表格', fontSize: 22, style: 'subheader', color: '#36B7AB', alignment: 'center'
+                },
+                {
+                    image: document.getElementById("tableImg").src,
+                    width:document.getElementById("tableImg").width,
+                    height:document.getElementById("tableImg").height,
+                    alignment: 'center'
+                },
+                {
+                    text: '饼状图', fontSize: 22, style: 'subheader', color: '#36B7AB', alignment: 'center'
+                },
+                {
+                    image: document.getElementById("chartImg").src,
+                    width:document.getElementById("chartImg").width,
+                    height:document.getElementById("chartImg").height,
+                    alignment: 'center'
+                }
+            ],
+            defaultStyle: {
+                font: '微软雅黑'
+            },
+            styles: {
+                per_info_header: {
+                    fontSize: 24,
+                    alignment: 'center'
+                },
+                per_info: {
+                    alignment: 'center'
+                },
+                header: {
+                    fontSize: 18,
+                    bold: true,
+                    margin: [0, 0, 0, 10]
+                },
+                subheader: {
+                    fontSize: 16,
+                    bold: true,
+                    margin: [0, 10, 0, 5]
+                }
+            }
+        }
+        pdfMake.fonts = {
+            Roboto: {
+                normal: 'Roboto-Regular.ttf',
+                bold: 'Roboto-Medium.ttf',
+                italics: 'Roboto-Italic.ttf',
+                bolditalics: 'Roboto-Italic.ttf'
+            },
+            微软雅黑: {
+                normal: '微软雅黑.ttf',
+                bold: '微软雅黑.ttf',
+                italics: '微软雅黑.ttf',
+                bolditalics: '微软雅黑.ttf',
+            }
+        };
+        pdfMake.createPdf(docDefinition).download("pdfmake-test.pdf");
     }
 
     exportAsWord = () => {
-
-        this.html2canvasImg("map", function(canvas){
-            var url = canvas.toDataURL();
-            var merge = document.createElement("canvas");
-            merge.width = "545px";
-            merge.height = "432px";
-            var ctx = merge.getContext('2d');
-            //ctx.drawImage(mapCanvas, 0, 0);
-            ctx.drawImage(canvas, 0, 0);
-            $("#md-print").attr("src",merge.toDataURL('image/png'));
-            //that.print.openPrintPanel();
-            $(".product-perform-component").wordExport('生成word文档');
-        });
-/*        const baseData = "<script id=\"tmpl\" type=\"text/html\">\n" +
-            "     <result version=\"A.3.0\">\n" +
-            "         <body>\n" +
-            "         <para heading=\"1\" lineSpacing=\"28\">\n" +
-            "             <text class=\"head\" valign=\"center\" fontName=\"标宋\" fontSize=\"29\"><%=title%></text>\n" +
-            "         </para>\n" +
-            "         <para>\n" +
-            "             <img  src=\"<%=img%>\" sizeType=\"autosize\"/>\n" +
-            "         </para>\n" +
-            "         <para lineSpacing=\"9\">\n" +
-            "             <text class=\"content\" fontName=\"仿宋\" fontSize=\"18\"><%=content%></text>\n" +
-            "         </para>\n" +
-            "         </body>\n" +
-            "     </result>\n" +
-            " </script>";
-        var type="docx";//pdf
-        var data = {
-            title: type+"文件",
-            img: "http://www.wordlm.com/uploads/allimg/130101/1_130101000405_1.jpg",
-            content: "我能导"+type+"文件啦",
-        };
-        var html=baseData.replace(/<%=title%>/,data.title)
-            .replace(/<%=img%>/,data.img)
-            .replace(/<%=content%>/,data.content);
-        $("body").append(html);
-        XDoc.to(baidu.template('tmpl', data), type, {}, "_blank");*/
-    }
-
-    html2canvasImg(targetElemId, callback){
-        debugger;
-        var $targetElem = $("#"+targetElemId);
-        // 将svg标签转为canvas
-        var nodesToRecover = [];
-        var nodesToRemove = [];
-        var $svgElem = $targetElem.find('svg');
-        $svgElem.each(function(index, node) {
-            var parentNode = node.parentNode;
-            var canvas = document.createElement('canvas');
-
-            canvg(canvas, parentNode, {ignoreMouse: true, ignoreAnimation: true});
-
-            //将svg转换成canvas
-            nodesToRecover.push({
-                parent: parentNode,
-                child: node
-            });
-            parentNode.removeChild(node);
-
-            nodesToRemove.push({
-                parent: parentNode,
-                child: canvas
-            });
-
-            parentNode.appendChild(canvas);
-        });
-
-        html2canvas($targetElem[0], {
-            useCORS: true,
-            async: false
-        }).then(function(canvas) {
-            debugger;
-            //document.body.appendChild(canvas);
-            callback(canvas);
-        });
+        $(".product-perform-component").wordExport('生成word文档');
     }
 
     exportAsExcel = (data) => {
@@ -151,9 +145,10 @@ class Products extends React.Component {
                 <Mapproduct items={items} />
                 <Tableproduct items={items} />
                 <Chartproduct items={items} />
+                <div className="export-pdf" onClick={() => this.exportAsPdf()}>导出为Pdf</div>
                 <div className="export-word" onClick={() => this.exportAsWord()}>导出为Word</div>
                 <div className="export-excel" onClick={() => this.exportAsExcel(items)}>导出为Ecxel</div>
-                <div id="md-print"></div>
+                <img id="md-print"></img>
             </div>
         )
         :(

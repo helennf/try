@@ -11,11 +11,6 @@ import 'echarts/lib/component/tooltip';
 import 'echarts/lib/component/toolbox';
 import 'echarts/lib/component/title';
 
-
-/*require("jquery-mousewheel")($);
-require('malihu-custom-scrollbar-plugin')($);*/
-/*import './../../../external/mCustomScrollbar/jquery.mCustomScrollbar.js';
-import './../../../external/mCustomScrollbar/jquery.mCustomScrollbar.css';*/
 import './style.scss';
 
 @observer
@@ -32,7 +27,7 @@ class Chartproduct extends React.Component{
             })
         );
         // 基于准备好的dom，初始化echarts实例
-        var myChart = echarts.init(document.getElementById('main'));
+        var myChart = echarts.init(document.getElementById('chart'));
         // 绘制图表
         myChart.setOption({
             title: {
@@ -43,6 +38,7 @@ class Chartproduct extends React.Component{
                     //fontWeight:'lighter'
                 }
             },
+            //animation: false,
             backgroundColor: '#fefdddD8',
             toolbox: { //可视化的工具箱
                 show: true,
@@ -96,7 +92,7 @@ class Chartproduct extends React.Component{
             series: [{
                 name: '全国各地区GDP占比',
                 type: 'pie',
-                radius: '30%',
+                radius: '40%',
                 //roseType: 'angle',
                 data: chartData,
                 label: {
@@ -123,12 +119,18 @@ class Chartproduct extends React.Component{
                 }
             }]
         });
-
+        setTimeout(function(){
+            var img = document.createElement("img");
+            img.setAttribute("id", "chartImg");
+            img.setAttribute('style','display:none;');
+            img.src = myChart.getConnectedDataURL();
+            document.getElementById('chart').appendChild(img);
+        }, 1000);
     };
 
     render(){
         return (
-            <div className="col-md-2-3 chart-product" id="main">
+            <div className="col-md-2-3 chart-product" id="chart">
             </div>
         )
     }

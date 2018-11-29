@@ -5,6 +5,7 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 import PropTypes from 'prop-types';
+import html2canvas from 'html2canvas';
 import 'jquery-mousewheel';
 import 'malihu-custom-scrollbar-plugin';
 import './../../../external/mCustomScrollbar/jquery.mCustomScrollbar.css';
@@ -39,6 +40,26 @@ class Tableproduct extends React.Component{
             },
             theme:"inset-2-dark"
         })
+        setTimeout(function(){
+            var targetElem = document.getElementById("table");
+            var width = targetElem.scrollWidth;
+            var height = targetElem.scrollHeight;
+            var scale = 1;
+            html2canvas(targetElem, {
+                scale: scale,
+                width: width,
+                height: height,
+                useCORS: true,
+                async: false,
+                allowTaint: true
+            }).then((canvas) => {
+                var img = document.createElement("img");
+                img.setAttribute("id", "tableImg");
+                img.setAttribute('style','display:none;');
+                img.src = canvas.toDataURL('image/jpeg');
+                document.getElementById('table').appendChild(img);
+            })
+        }, 1000);
     }
 
     render(){
@@ -51,8 +72,8 @@ class Tableproduct extends React.Component{
             )
         );
         return(
-            <div className="col-md-2-3 table-product">
-                <table cellSpacing="0">
+            <div className="col-md-2-3 table-product" id="table">
+                <table id="table-element" cellSpacing="0">
                     <tbody>
                     <tr className="table-header">
                         <th>行政区划编号</th>

@@ -24,7 +24,8 @@ if (typeof jQuery !== "undefined" && typeof saveAs !== "undefined") {
 
             // Embed all images using Data URLs
             var images = Array();
-            var img = markup.find('img');
+            var img = new Image();
+            img = markup.find('img');
             if(isbase64){
                 for (var i = 0; i < img.length; i++) {
                     var uri = img[i].src;

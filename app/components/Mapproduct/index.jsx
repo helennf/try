@@ -9,6 +9,7 @@ import PropTypes from 'prop-types';
 import ReactMapboxGl, { GeoJSONLayer } from 'react-mapbox-gl';
 import * as MapboxGL from 'mapbox-gl';
 import './style.scss';
+import html2canvas from "html2canvas";
 
 const Map = ReactMapboxGl({
     accessToken: "pk.eyJ1IjoiaHNhY2NvdW50IiwiYSI6ImNqb2k5aGI5ZjA2dHgzcnQ2YjQ2Zzh2ZmkifQ.OtSQtiTzfeSD8cYuUGiBxA"
@@ -39,6 +40,30 @@ class Mapproduct extends React.Component {
     static propTypes = {
         items: PropTypes.array.isRequired,
     };
+
+    componentDidMount(){
+        debugger;
+        setTimeout(function(){
+            var targetElem = document.getElementById("map");
+            var width = targetElem.scrollWidth;
+            var height = targetElem.scrollHeight;
+            var scale = 1;
+            html2canvas(targetElem, {
+                scale: scale,
+                width: width,
+                height: height,
+                useCORS: true,
+                async: false,
+                allowTaint: true
+            }).then((canvas) => {
+                var img = document.createElement("img");
+                img.setAttribute("id", "mapImg");
+                img.setAttribute('style','display:none;');
+                img.src = canvas.toDataURL('image/jpeg');
+                document.getElementById('map').appendChild(img);
+            })
+        }, 5000);
+    }
 
     getFillPaintValue(item)
     {
@@ -90,6 +115,12 @@ class Mapproduct extends React.Component {
                     }}
                     center={[114.316052, 30.520348]}
                     zoom={[5]}
+                    fadeAnimation={false}
+                // attributionControl: false,
+                    zoomControl={false}
+                    selectArea={true}
+                    contextmenu={true}
+                    contextmenuItems={[]}
                 >
                     {itemsGeojson}
                     <GeoJSONLayer
