@@ -61,6 +61,15 @@ class Products extends React.Component {
                     width:document.getElementById("chartImg").width,
                     height:document.getElementById("chartImg").height,
                     alignment: 'center'
+                },
+                {
+                    text: 'mapbox地图', fontSize: 22, style: 'subheader', color: '#36B7AB', alignment: 'center'
+                },
+                {
+                    image: document.getElementById("mapImg").src,
+                    width:document.getElementById("mapImg").width,
+                    height:document.getElementById("mapImg").height,
+                    alignment: 'center'
                 }
             ],
             defaultStyle: {
@@ -100,18 +109,30 @@ class Products extends React.Component {
                 bolditalics: '微软雅黑.ttf',
             }
         };
-        pdfMake.createPdf(docDefinition).download("pdfmake-test.pdf");
+        var a = new Date();
+        //a =a.replace(/\//g,'-');
+        const time = "生成pdf文档"+ a.toLocaleString() +".pdf";
+        pdfMake.createPdf(docDefinition).download(time);
     }
 
     exportAsWord = () => {
-        $(".product-perform-component").wordExport('生成word文档');
+        var a = new Date();
+        //a =a.replace(/\//g,'-');
+        const time = "生成word文档"+ a.toLocaleString();
+        $(".product-area").wordExport(time);
     }
 
     exportAsExcel = (data) => {
         const wopts = { bookType: 'xlsx', bookSST: false, type: 'binary' };
         const wb = { SheetNames: ['Sheet1'], Sheets: {}, Props: {} };
+        data.map(item =>{
+            item.geojson = JSON.stringify(item.geojson)
+        });
         wb.Sheets['Sheet1'] = XLSX.utils.json_to_sheet(data);//通过json_to_sheet转成单页(Sheet)数据
-        this.saveAs(new Blob([this.s2ab(XLSX.write(wb, wopts))], { type: "application/octet-stream" }), "关联表数据" + '.' + (wopts.bookType=="biff2"?"xls":wopts.bookType));
+        var a = new Date();
+        //a =a.replace(/\//g,'-');
+        const time = "生成excel表格"+ a.toLocaleString();
+        this.saveAs(new Blob([this.s2ab(XLSX.write(wb, wopts))], { type: "application/octet-stream" }), time + '.' + (wopts.bookType=="biff2"?"xls":wopts.bookType));
     }
 
     saveAs(obj, fileName){
@@ -139,16 +160,19 @@ class Products extends React.Component {
 
     render(){
         const items = this.props.data;
+
         const mainpart = items.length > 0
         ?(
-            <div className="product-area">
-                <Mapproduct items={items} />
-                <Tableproduct items={items} />
-                <Chartproduct items={items} />
+            <div className="product-content">
+                <div className="product-area">
+                    <Mapproduct items={items} />
+                    <Tableproduct items={items} />
+                    <Chartproduct items={items} />
+
+                </div>
                 <div className="export-pdf" onClick={() => this.exportAsPdf()}>导出为Pdf</div>
                 <div className="export-word" onClick={() => this.exportAsWord()}>导出为Word</div>
                 <div className="export-excel" onClick={() => this.exportAsExcel(items)}>导出为Ecxel</div>
-                <img id="md-print"></img>
             </div>
         )
         :(

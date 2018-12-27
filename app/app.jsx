@@ -18,7 +18,7 @@ class Store{
 
     disposers = [];
 
-    constructor(){
+    constructor(map){
         observe(this.todos, change =>{
             this.disposers.forEach(disposer => disposer());
             this.disposers = [];
@@ -31,7 +31,8 @@ class Store{
             }
             this.save();
             //console.log(change);
-        })
+        });
+        this.map = map;
     }
 
     save(){

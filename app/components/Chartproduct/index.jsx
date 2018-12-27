@@ -131,6 +131,7 @@ class Chartproduct extends React.Component{
     render(){
         return (
             <div className="col-md-2-3 chart-product" id="chart">
+                <p className="f-dn">饼状图</p>
             </div>
         )
     }

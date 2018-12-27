@@ -55,13 +55,14 @@ module.exports={
                 test: /\.scss$/,
                 use:['style-loader', 'css-loader', 'sass-loader']
             },{
-                test: /\.(jpg|png|gif|jpeg)$/,
+                test: /\.(jpg|png|gif|jpeg|svg)$/,
                 use: [{
                     loader: 'url-loader',
                     options:{
-                        limit: 8192, //1024代表1kb，小于8k以base64格式加载，否则以图片地址方式加载
-                        name: 'img/[hash:8].[name].[ext]',
-                        publicPath: '/dist/'
+                        //limit: 8192, //1024代表1kb，小于8k以base64格式加载，否则以图片地址方式加载
+                        name: '[hash:8].[name].[ext]',
+                        //outputPath: '/app/img',//与图片输出路径一致，图片被打包到这里
+                        //publicPath: '../../',//与css背景图片一致，图片被发布到这里
                     }
                 }]
             }

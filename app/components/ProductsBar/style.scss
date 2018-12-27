@@ -23,9 +23,11 @@
         font-family: SimSun;
     }
 
-    .product-area{
-        width: 100%;
-        height: 100%;
+    .product-content{
+        .product-area{
+            width: 100%;
+            height: 100%;
+        }
 
         .export-pdf{
             position: absolute;
@@ -64,4 +66,5 @@
             cursor: pointer;
         }
     }
+
 }

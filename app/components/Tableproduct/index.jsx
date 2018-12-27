@@ -73,6 +73,7 @@ class Tableproduct extends React.Component{
         );
         return(
             <div className="col-md-2-3 table-product" id="table">
+                <p className="f-dn">表格</p>
                 <table id="table-element" cellSpacing="0">
                     <tbody>
                     <tr className="table-header">

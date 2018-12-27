@@ -30,7 +30,8 @@ export default class Root extends React.Component{
         super(props);
 
         this.state = {
-            data: []
+            data: [],
+            map: {}
         };
 
         this.allowDrop = this.allowDrop.bind(this);
@@ -72,7 +73,8 @@ export default class Root extends React.Component{
     //取消关联数据
     notUnionData(){
         this.setState({
-            data: []
+            data: [],
+            map: {}
         });
     }
 

@@ -6,34 +6,9 @@ import React from 'react';
 import { observer,PropTypes as ObservablePropTypes } from 'mobx-react';
 import { trace } from 'mobx';
 import PropTypes from 'prop-types';
-import ReactMapboxGl, { GeoJSONLayer } from 'react-mapbox-gl';
-import * as MapboxGL from 'mapbox-gl';
+import MapboxGL from 'mapbox-gl';
+import MapboxLanguage from '@mapbox/mapbox-gl-language';
 import './style.scss';
-import html2canvas from "html2canvas";
-
-const Map = ReactMapboxGl({
-    accessToken: "pk.eyJ1IjoiaHNhY2NvdW50IiwiYSI6ImNqb2k5aGI5ZjA2dHgzcnQ2YjQ2Zzh2ZmkifQ.OtSQtiTzfeSD8cYuUGiBxA"
-});
-
-//标志点数据
-const symbolpoints = require('./../../data/geojson.json');
-//设定标志点图层Layout与Paint
-const symbolLayout = MapboxGL.SymbolLayout = {
-    'text-field': '{place}',
-    'text-font': ['Open Sans Semibold', 'Arial Unicode MS Bold'],
-    'text-offset': [0, 0.3],
-    'text-anchor': 'top'
-};
-const symbolPaint = MapboxGL.SymbolPaint = {
-    'text-color': '#3385ff'
-};
-const circleLayout = MapboxGL.CircleLayout = { visibility: 'visible' };
-const circlePaint = MapboxGL.CirclePaint = {
-    'circle-color': '#3385ff',
-    'circle-radius': 3
-};
-//设定面图层Layout
-const fillLayout = MapboxGL.FillLayout = { visibility: 'visible' };
 
 @observer
 class Mapproduct extends React.Component {
@@ -42,27 +17,75 @@ class Mapproduct extends React.Component {
     };
 
     componentDidMount(){
-        debugger;
-        setTimeout(function(){
-            var targetElem = document.getElementById("map");
-            var width = targetElem.scrollWidth;
-            var height = targetElem.scrollHeight;
-            var scale = 1;
-            html2canvas(targetElem, {
-                scale: scale,
-                width: width,
-                height: height,
-                useCORS: true,
-                async: false,
-                allowTaint: true
-            }).then((canvas) => {
+        const that = this;
+        MapboxGL.accessToken = "pk.eyJ1IjoiaHNhY2NvdW50IiwiYSI6ImNqb2k5aGI5ZjA2dHgzcnQ2YjQ2Zzh2ZmkifQ.OtSQtiTzfeSD8cYuUGiBxA";
+
+        //设置地图区域
+        let bounds = [
+        [118.21, 28.11], // Southwest coordinates，西南坐标
+        [122.40, 31.33]  // Northeast coordinates，东北坐标
+        ];
+
+        const map = new MapboxGL.Map({
+            style: 'mapbox://styles/mapbox/streets-v10',
+            center: [114.316052, 30.520348], //地图中心经纬度
+            zoom: 4.5, //缩放级别
+            minZoom: 2,
+            maxZoom: 19,
+            pitch: 45,
+            bearing: -17.6,
+            container: 'container',
+            preserveDrawingBuffer: true,
+            //maxBounds: bounds
+        });
+
+        var language = new MapboxLanguage();
+        map.addControl(language);
+
+        //通过设置设备像素比，提高图片清晰度
+        var dpi = 300;
+        Object.defineProperty(window, 'devicePixelRatio', {
+            get: function() {return dpi / 96}
+        });
+
+        var clock = setInterval(function(){
+            if(map.isStyleLoaded()){
+                var mapContent = map.getCanvas().toDataURL('image/png');
+                //console.log(mapContent);
                 var img = document.createElement("img");
                 img.setAttribute("id", "mapImg");
                 img.setAttribute('style','display:none;');
-                img.src = canvas.toDataURL('image/jpeg');
+                img.src = mapContent;
+                var mapCanvas = document.getElementById("map");
+                img.width = mapCanvas.offsetWidth;
+                img.height = mapCanvas.offsetHeight;
+                // 解决图片的跨域问题
+                //img.crossOrigin = "Anonymous";
                 document.getElementById('map').appendChild(img);
-            })
-        }, 5000);
+
+                clearInterval(clock);
+            }
+        }, 1000);
+
+        map.on('load', function () {
+            that.props.items.map(item =>
+            {
+                map.addLayer({
+                    'id': item.id,
+                    'type': 'fill',
+                    'source': {
+                        'type': 'geojson',
+                        'data': item.geojson
+                    },
+                    'layout': {},
+                    'paint': {
+                        'fill-color': that.getFillPaintValue(item),
+                        'fill-outline-color': '#3385ff',
+                        'fill-opacity': 0.6
+                    }
+                });
+            });
+        });
     }
 
     getFillPaintValue(item)
@@ -86,52 +109,14 @@ class Mapproduct extends React.Component {
         } else if (71000 < itemGdp && itemGdp <= 81000) {
             fillColor = '#ff009f';
         }
-        const fillPaint = MapboxGL.FillPaint = {
-            'fill-color': fillColor,
-            'fill-outline-color': '#3385ff',
-            'fill-opacity': 0.6
-        };
-        return fillPaint;
+        return fillColor;
     };
 
     render() {
-        const itemsGeojson = this.props.items.map(
-            item => (
-                <GeoJSONLayer
-                    data={item.geojson}
-                    fillLayout={fillLayout}
-                    fillPaint={this.getFillPaintValue(item)}
-                    key={item.id}
-                />
-            )
-        );
         return (
             <div className="col-md-2-1 map-product" id="map">
-                <Map
-                    style="mapbox://styles/mapbox/streets-v9"
-                    containerStyle={{
-                        height: "432px",
-                        width: "545px"
-                    }}
-                    center={[114.316052, 30.520348]}
-                    zoom={[5]}
-                    fadeAnimation={false}
-                // attributionControl: false,
-                    zoomControl={false}
-                    selectArea={true}
-                    contextmenu={true}
-                    contextmenuItems={[]}
-                >
-                    {itemsGeojson}
-                    <GeoJSONLayer
-                        data={symbolpoints}
-                        circleLayout={circleLayout}
-                        circlePaint={circlePaint}
-                        symbolLayout={symbolLayout}
-                        symbolPaint={symbolPaint}
-                    >
-                    </GeoJSONLayer>
-                </Map>
+                <p className="f-dn">mapbox地图</p>
+                <div id="container"></div>
             </div>
         )
     }
